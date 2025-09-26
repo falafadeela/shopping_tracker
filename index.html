@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>บันทึกการซื้อ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        table {
+            border-collapse: separate;
+            border-spacing: 0;
+            overflow: hidden;
+        }
+        th, td {
+            border-bottom: 1px solid #e5e7eb;
+            border-right: 1px solid #e5e7eb;
+        }
+        th:last-child, td:last-child {
+            border-right: none;
+        }
+    </style>
+</head>
+<body class="bg-amber-50 text-gray-900 transition-colors duration-300 p-4 sm:p-6 lg:p-8 flex flex-col items-center min-h-screen">
+    <div class="w-full max-w-6xl bg-white p-6 sm:p-8 rounded-2xl shadow-xl">
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-center text-gray-800 mb-6">บันทึกการซื้อ</h1>
+
+        <div class="mb-6 space-y-4 p-4 rounded-lg bg-yellow-100">
+            <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-4">เพิ่มรายการใหม่</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="relative">
+                    <input id="item-name" type="text" placeholder="ชื่อสินค้า (เช่น นม, ขนมปัง)" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 transition-colors">
+                    <ul id="suggestions-list" class="absolute z-10 w-full bg-white border border-gray-300 rounded-lg mt-1 hidden max-h-40 overflow-y-auto shadow-lg"></ul>
+                </div>
+                <input id="item-quantity" type="number" placeholder="จำนวนชิ้น" class="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 transition-colors">
+                <input id="item-price" type="number" placeholder="ราคาต่อหน่วย" class="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 transition-colors">
+                <input id="purchase-date" type="date" class="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 transition-colors">
+            </div>
+            <button id="add-item-btn" class="w-full p-3 font-semibold text-white bg-yellow-500 hover:bg-yellow-600 rounded-lg shadow-md transform transition-transform hover:scale-105 active:scale-95 mt-4">
+                <i class="fas fa-plus-circle mr-2"></i>เพิ่มรายการ
+            </button>
+        </div>
+
+        <div id="message-container" class="hidden fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+            <div class="bg-white p-6 rounded-lg shadow-xl text-center">
+                <p id="message-text" class="text-gray-900 mb-4"></p>
+                <button class="bg-indigo-600 text-white p-2 rounded-lg" onclick="document.getElementById('message-container').classList.add('hidden')">ปิด</button>
+            </div>
+        </div>
+
+        <div class="mb-6 space-y-4">
+            <h2 class="text-xl sm:text-2xl font-bold text-gray-800">รายการซื้อของ</h2>
+            <button id="export-excel-btn" class="p-2 sm:p-3 font-semibold text-white bg-green-600 hover:bg-green-700 rounded-lg shadow-md transform transition-transform hover:scale-105 active:scale-95">
+                <i class="fas fa-file-excel mr-2"></i>ส่งออกเป็น Excel
+            </button>
+            <div class="overflow-x-auto rounded-lg shadow-md border border-gray-200 mt-4">
+                <table id="shopping-table" class="min-w-full bg-white">
+                    <thead>
+                        <tr class="bg-gray-100 text-left text-sm sm:text-base">
+                            <th class="p-3 font-semibold text-gray-600">ชื่อสินค้า</th>
+                            <th class="p-3 font-semibold text-gray-600">วันที่ซื้อล่าสุด</th>
+                            <th class="p-3 font-semibold text-gray-600">จำนวนชิ้นก่อนหน้า</th>
+                            <th class="p-3 font-semibold text-gray-600">จำนวนชิ้นล่าสุด</th>
+                            <th class="p-3 font-semibold text-gray-600">ยอดต่าง (ชิ้น)</th>
+                            <th class="p-3 font-semibold text-gray-600">ราคาต่อหน่วยก่อนหน้า (บาท)</th>
+                            <th class="p-3 font-semibold text-gray-600">ราคาต่อหน่วยล่าสุด (บาท)</th>
+                            <th class="p-3 font-semibold text-gray-600">ราคารวมก่อนหน้า (บาท)</th>
+                            <th class="p-3 font-semibold text-gray-600">ราคารวมล่าสุด (บาท)</th>
+                            <th class="p-3 font-semibold text-gray-600">ยอดต่าง (บาท)</th>
+                            <th class="p-3 font-semibold text-gray-600">ระยะห่าง (วัน)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="shopping-list-table">
+                        <tr id="no-items-row" class="text-center italic text-gray-500">
+                            <td colspan="11" class="p-4">ไม่มีรายการซื้อของ</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="mt-8 space-y-4 p-4 rounded-lg bg-gray-50">
+            <h2 class="text-xl sm:text-2xl font-bold text-gray-800">สรุปตามช่วงเวลา</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                <button id="show-weekly-btn" class="p-3 font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-md transform transition-transform hover:scale-105 active:scale-95">
+                    <i class="fas fa-calendar-week mr-2"></i>รายสัปดาห์
+                </button>
+                <button id="show-monthly-btn" class="p-3 font-semibold text-white bg-sky-600 hover:bg-sky-700 rounded-lg shadow-md transform transition-transform hover:scale-105 active:scale-95">
+                    <i class="fas fa-calendar-alt mr-2"></i>รายเดือน
+                </button>
+                <button id="show-yearly-btn" class="p-3 font-semibold text-white bg-violet-600 hover:bg-violet-700 rounded-lg shadow-md transform transition-transform hover:scale-105 active:scale-95">
+                    <i class="fas fa-calendar-check mr-2"></i>รายปี
+                </button>
+                <input id="start-date-input" type="date" class="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 transition-colors col-span-1 lg:col-span-2">
+                <input id="end-date-input" type="date" class="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 transition-colors col-span-1 lg:col-span-2">
+                <button id="show-custom-summary-btn" class="p-3 font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-md transform transition-transform hover:scale-105 active:scale-95 col-span-2 lg:col-span-1">
+                    <i class="fas fa-chart-bar mr-2"></i>แสดงสรุปแบบกำหนดเอง
+                </button>
+            </div>
+        </div>
+
+        <div id="summary-modal" class="hidden fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+            <div class="bg-white p-6 rounded-lg shadow-xl w-11/12 max-w-md">
+                <h3 id="summary-title" class="text-2xl font-bold mb-4 text-center"></h3>
+                <div id="summary-details-container" class="space-y-4 max-h-80 overflow-y-auto"></div>
+                <div class="mt-4 pt-4 border-t border-gray-200 text-center">
+                    <p id="summary-total-items" class="text-lg font-semibold mb-1"></p>
+                    <p id="summary-total-price" class="text-lg font-semibold mb-1"></p>
+                    <button class="bg-indigo-600 text-white p-2 rounded-lg" onclick="document.getElementById('summary-modal').classList.add('hidden')">ปิด</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const itemNameInput = document.getElementById('item-name');
+            const itemQuantityInput = document.getElementById('item-quantity');
+            const itemPriceInput = document.getElementById('item-price');
+            const purchaseDateInput = document.getElementById('purchase-date');
+            const addItemBtn = document.getElementById('add-item-btn');
+            const shoppingListTable = document.getElementById('shopping-list-table');
+            const noItemsRow = document.getElementById('no-items-row');
+            const messageContainer = document.getElementById('message-container');
+            const messageText = document.getElementById('message-text');
+            const suggestionsList = document.getElementById('suggestions-list');
+            const exportExcelBtn = document.getElementById('export-excel-btn');
+            const shoppingTable = document.getElementById('shopping-table');
+
+            const showWeeklyBtn = document.getElementById('show-weekly-btn');
+            const showMonthlyBtn = document.getElementById('show-monthly-btn');
+            const showYearlyBtn = document.getElementById('show-yearly-btn');
+            const startDateInput = document.getElementById('start-date-input');
+            const endDateInput = document.getElementById('end-date-input');
+            const showCustomSummaryBtn = document.getElementById('show-custom-summary-btn');
+            const summaryModal = document.getElementById('summary-modal');
+            const summaryTitle = document.getElementById('summary-title');
+            const summaryDetailsContainer = document.getElementById('summary-details-container');
+            const summaryTotalItems = document.getElementById('summary-total-items');
+            const summaryTotalPrice = document.getElementById('summary-total-price');
+
+            let shoppingItems = JSON.parse(localStorage.getItem('shoppingItems')) || [];
+            let allTransactions = JSON.parse(localStorage.g
