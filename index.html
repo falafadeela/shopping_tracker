@@ -39,7 +39,7 @@
                 <input id="item-price" type="number" placeholder="ราคาต่อหน่วย" class="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 transition-colors">
                 <input id="item-date" type="date" class="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 transition-colors">
             </div>
-            <button id="add-item-btn" disabled class="w-full p-3 font-semibold text-white bg-gray-400 rounded-lg shadow-md mt-4 cursor-not-allowed">
+            <button id="add-item-btn" class="w-full p-3 font-semibold text-white bg-yellow-500 hover:bg-yellow-600 rounded-lg shadow-md mt-4 transform transition-transform hover:scale-105 active:scale-95">
                 <i class="fas fa-plus-circle mr-2"></i>เพิ่มรายการ
             </button>
         </div>
@@ -143,6 +143,4 @@
             const summaryTotalPrice = document.getElementById('summary-total-price');
 
             let shoppingItems = JSON.parse(localStorage.getItem('shoppingItems')) || [];
-            let allTransactions = JSON.parse(localStorage.getItem('allTransactions')) || [];
-
-            function showMessage(m
+            let allTransactions = JSON.parse(localStorage.getItem('allT
