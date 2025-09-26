@@ -30,15 +30,16 @@
 
         <div class="mb-6 space-y-4 p-4 rounded-lg bg-yellow-100">
             <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-4">เพิ่มรายการใหม่</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div class="relative">
                     <input id="item-name" type="text" placeholder="ชื่อสินค้า (เช่น นม, ขนมปัง)" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 transition-colors">
                     <ul id="suggestions-list" class="absolute z-10 w-full bg-white border border-gray-300 rounded-lg mt-1 hidden max-h-40 overflow-y-auto shadow-lg"></ul>
                 </div>
                 <input id="item-quantity" type="number" placeholder="จำนวนชิ้น" class="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 transition-colors">
                 <input id="item-price" type="number" placeholder="ราคาต่อหน่วย" class="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 transition-colors">
+                <input id="item-date" type="date" class="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 transition-colors">
             </div>
-            <button id="add-item-btn" class="w-full p-3 font-semibold text-white bg-yellow-500 hover:bg-yellow-600 rounded-lg shadow-md mt-4 transform transition-transform hover:scale-105 active:scale-95">
+            <button id="add-item-btn" disabled class="w-full p-3 font-semibold text-white bg-gray-400 rounded-lg shadow-md mt-4 cursor-not-allowed">
                 <i class="fas fa-plus-circle mr-2"></i>เพิ่มรายการ
             </button>
         </div>
@@ -119,6 +120,7 @@
             const itemNameInput = document.getElementById('item-name');
             const itemQuantityInput = document.getElementById('item-quantity');
             const itemPriceInput = document.getElementById('item-price');
+            const itemDateInput = document.getElementById('item-date');
             const addItemBtn = document.getElementById('add-item-btn');
             const shoppingListTable = document.getElementById('shopping-list-table');
             const noItemsRow = document.getElementById('no-items-row');
@@ -143,9 +145,4 @@
             let shoppingItems = JSON.parse(localStorage.getItem('shoppingItems')) || [];
             let allTransactions = JSON.parse(localStorage.getItem('allTransactions')) || [];
 
-            function showMessage(message) {
-                messageText.textContent = message;
-                messageContainer.classList.remove('hidden');
-            }
-            
-            fun
+            function showMessage(m
