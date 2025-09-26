@@ -142,6 +142,7 @@
             const summaryTotalItems = document.getElementById('summary-total-items');
             const summaryTotalPrice = document.getElementById('summary-total-price');
 
-            // โหลดข้อมูลจาก Local Storage เมื่อแอปเริ่มทำงาน
             let shoppingItems = JSON.parse(localStorage.getItem('shoppingItems')) || [];
-            let allTransactions = JSON.parse(localStor
+            let allTransactions = JSON.parse(localStorage.getItem('allTransactions')) || [];
+
+            function s
